@@ -1,9 +1,12 @@
-HOST=192.168.2.193
-USER=dev
-CURRENT_DIR = $(shell pwd)
 
+install: copy-config
+	docker compose build
 
-sync:
-	ssh -i ~/.ssh/id_ed25519_deploy  -p 22 $(USER)@$(HOST) 'docker cp opencanary_latest:/var/tmp/opencanary.log /home/dev/honeypot/opencanary/opencanary.log'
-	scp -i ~/.ssh/id_ed25519_deploy $(USER)@$(HOST):/home/dev/honeypot/opencanary/opencanary.log $(CURRENT_DIR)/import/
-	php sync.php
+up:
+	docker compose up -d --wait
+
+down:
+	docker compose down
+
+copy-config:
+	cp config/.opencanary.conf opencanary/data/.opencanary.conf
