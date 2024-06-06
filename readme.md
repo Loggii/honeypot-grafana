@@ -6,7 +6,7 @@
 
 * run ```make install``` to copy the configuration file to opencanary and build the Docker container
 * run ```make up``` to run the Docker container
-* open the following ports, if you want that the fake service is available from the Internet:
+* open the following ports, if you want that the honeypot is available from the Internet:
    * FTP 21
    * SSH 22
    * Telnet 23
