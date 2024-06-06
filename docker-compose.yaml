@@ -1,10 +1,88 @@
-version: '3.8'
 services:
   grafana:
     image: grafana/grafana
     container_name: grafana
     restart: unless-stopped
+    networks:
+      - honeypot
     ports:
       - '3000:3000'
     volumes:
       - ./grafana-storage:/var/lib/grafana:rw
+
+  db:
+    image: mariadb
+    container_name: db-honey
+    restart: unless-stopped
+    networks:
+      - honeypot
+    volumes:
+      - ./data:/var/lib/mysql:Z
+    environment:
+      MARIADB_ROOT_PASSWORD: ChangeMe!!!
+
+  php-cli:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: php-honey
+    restart: unless-stopped
+    volumes:
+      - ./opencanary/logs:/app/logs
+    networks:
+      - honeypot
+    command:
+      - /app/run.sh
+    environment:
+      MARIADB_ROOT_PASSWORD: ChangeMe!!!
+
+  honeypot:
+    container_name: opencanary
+    image: thinkst/opencanary
+    build:
+      context: ./opencanary
+      dockerfile: Dockerfile.latest
+    restart: unless-stopped
+    depends_on:
+      - php-cli
+    networks:
+      - honeypot
+    volumes:
+      - ./opencanary/data/.opencanary.conf:/root/.opencanary.conf
+      - ./opencanary/logs/opencanary.log:/var/tmp/opencanary.log:Z
+    ports:
+      # FTP
+      - "21:21"
+      # SSH
+      - "22:22"
+      # Telnet
+      - "23:23"
+      # TFTP
+      - "69:69"
+      # NTP
+      - "123:123"
+      # SNMP
+      - "161:161"
+      # MSSQL
+      - "1433:1433"
+      # MYSQL
+      - "3306:3306"
+      # RDP
+      - "3389:3389"
+      # VNC
+      - "5000:5000"
+      # SIP
+      - "5060:5060"
+      # REDIS
+      - "6379:6379"
+      # TCP Banner
+      - "8001:8001"
+      # HTTP Proxy
+      - "8080:8080"
+      # Git
+      # - "9418:9418"
+
+
+networks:
+  honeypot:
+    driver: bridge
