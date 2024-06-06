@@ -1,0 +1,7 @@
+{
+  "require": {
+    "ext-json": "*",
+    "maxmind-db/reader": "~1.0",
+    "ext-mysqli": "*"
+  }
+}
