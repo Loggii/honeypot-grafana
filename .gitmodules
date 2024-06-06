@@ -1,0 +1,3 @@
+[submodule "opencanary"]
+	path = opencanary
+	url = git@github.com:thinkst/opencanary.git
