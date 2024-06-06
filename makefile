@@ -1,5 +1,5 @@
 
-install: copy-config
+install: copy-config unzip-geo
 	docker compose build
 
 up:
